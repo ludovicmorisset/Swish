@@ -1,6 +1,7 @@
 FROM nginxinc/nginx-unprivileged:1.27-alpine
 
 COPY --chown=nginx:nginx index.html /usr/share/nginx/html/index.html
+COPY --chown=nginx:nginx src/ /usr/share/nginx/html/src/
 
 EXPOSE 8080
 
