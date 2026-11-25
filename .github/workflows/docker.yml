@@ -1,0 +1,34 @@
+name: Docker image
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate JavaScript
+        run: node -e 'const fs=require("node:fs"),vm=require("node:vm");const html=fs.readFileSync("index.html","utf8");const scripts=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];if(scripts.length!==1)process.exit(1);new vm.Script(scripts[0][1]);'
+      - name: Build image
+        run: docker build --tag swish:test .
+      - name: Smoke test container
+        run: |
+          docker network create npm_default
+          trap 'docker compose -f docker-compose.yml down >/dev/null 2>&1 || true; docker network rm npm_default >/dev/null 2>&1 || true' EXIT
+          docker compose -f docker-compose.yml up --detach --build
+          container=$(docker compose -f docker-compose.yml ps -q swish)
+          for attempt in $(seq 1 20); do
+            if docker exec "$container" wget -q -O /dev/null http://127.0.0.1:8080/; then
+              break
+            fi
+            sleep 1
+          done
+          docker exec "$container" wget -q -O - http://127.0.0.1:8080/ | grep -q '<title>Swish'

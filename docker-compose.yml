@@ -1,0 +1,32 @@
+services:
+  swish:
+    build:
+      context: .
+    image: swish:latest
+    container_name: swish
+    init: true
+    restart: unless-stopped
+    expose:
+      - "8080"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - npm-proxy
+
+networks:
+  npm-proxy:
+    external: true
+    name: ${NPM_NETWORK:-npm_default}
