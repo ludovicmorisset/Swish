@@ -1,0 +1,14 @@
+{
+  "name": "Swish — Concours de basketball",
+  "short_name": "Swish",
+  "description": "Gestion de concours de tirs au basketball pour les clubs.",
+  "lang": "fr",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f4ef",
+  "theme_color": "#f5f4ef",
+  "icons": [
+    { "src": "/src/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/src/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

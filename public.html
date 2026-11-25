@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Résultats du club — Swish</title>
+  <style>
+    :root{font-family:system-ui,sans-serif;color:#18231f;background:#f5f4ef}body{margin:0;padding:32px 16px}.panel{max-width:900px;margin:auto;background:white;border:1px solid #e5e4dc;border-radius:14px;padding:24px}h1{font-size:clamp(28px,6vw,48px);margin:0 0 8px}p{color:#737b74}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:12px;border-bottom:1px solid #eee}th{color:#737b74;font-size:12px;text-transform:uppercase}.error{color:#a43f32}
+  </style>
+</head>
+<body>
+  <main class="panel"><p>SWISH · RÉSULTATS EN DIRECT</p><h1 id="club">Chargement…</h1><p id="contest"></p><p><a href="/privacy.html">Confidentialité</a></p><div id="message" role="status"></div><div class="table-wrap"><table><thead><tr><th>Rang</th><th>Participant</th><th>Points</th><th>Réussis</th></tr></thead><tbody id="results"></tbody></table></div></main>
+  <script type="module">
+    const token = new URLSearchParams(location.search).get('token');
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    try {
+      if (!token) throw new Error('Lien de résultats invalide.');
+      const response = await fetch(`/api/public/${encodeURIComponent(token)}`, { cache: 'no-store' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Résultats indisponibles.');
+      document.getElementById('club').textContent = data.clubName;
+      document.getElementById('contest').textContent = data.contestName;
+      document.getElementById('results').innerHTML = data.players.map((player, index) => `<tr><td>${index + 1}</td><td>${escapeHtml(player.name)}</td><td>${player.score} pts</td><td>${player.made} / 25</td></tr>`).join('') || '<tr><td colspan="4">Pas encore de résultat publié.</td></tr>';
+    } catch (error) {
+      document.getElementById('club').textContent = 'Résultats indisponibles';
+      document.getElementById('message').className = 'error';
+      document.getElementById('message').textContent = error.message;
+    }
+  </script>
+</body>
+</html>

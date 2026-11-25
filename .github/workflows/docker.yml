@@ -16,7 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Validate JavaScript
-        run: node -e 'const fs=require("node:fs"),vm=require("node:vm");const html=fs.readFileSync("index.html","utf8");const scripts=[...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];if(scripts.length!==1)process.exit(1);new vm.Script(scripts[0][1]);'
+        run: node --check src/domain.mjs && node --check src/demo.mjs && node --check server.mjs && node --check sw.js && node -e 'const fs=require("node:fs"),vm=require("node:vm");for(const file of ["index.html","public.html"]){const html=fs.readFileSync(file,"utf8");for(const match of html.matchAll(/<script type="module">([\\s\\S]*?)<\\/script>/g))new vm.Script("(async()=>{"+match[1].split("\\n").filter(line=>!line.trimStart().startsWith("import ")).join("\\n")+"})");}'
+      - name: Run tests
+        run: npm test
       - name: Build image
         run: docker build --tag swish:test .
       - name: Smoke test container
@@ -26,9 +28,11 @@ jobs:
           docker compose -f docker-compose.yml up --detach --build
           container=$(docker compose -f docker-compose.yml ps -q swish)
           for attempt in $(seq 1 20); do
-            if docker exec "$container" wget -q -O /dev/null http://127.0.0.1:8080/; then
+            if docker exec "$container" node -e 'fetch("http://127.0.0.1:8080/api/health").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))'; then
               break
             fi
             sleep 1
           done
           docker exec "$container" wget -q -O - http://127.0.0.1:8080/ | grep -q '<title>Swish'
+          docker exec "$container" wget -q -O - http://127.0.0.1:8080/api/health | grep -q '"status":"ok"'
+          docker exec "$container" wget -q -O - http://127.0.0.1:8080/manifest.webmanifest | grep -q '"name"'

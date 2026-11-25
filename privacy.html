@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <title>Confidentialité — Swish</title>
+  <style>
+    body{max-width:760px;margin:0 auto;padding:32px 20px;font:16px/1.6 system-ui,sans-serif;color:#18231f;background:#f5f4ef}main{background:#fff;padding:clamp(20px,5vw,42px);border:1px solid #e5e4dc;border-radius:14px}h1{font-size:clamp(30px,6vw,44px)}h2{margin-top:30px}a{color:#347a58}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Confidentialité de Swish</h1>
+    <p>Dernière mise à jour : 2026-11-25</p>
+    <h2>Données traitées</h2>
+    <p>Les espaces club enregistrent l’adresse électronique des membres, le nom du club, les préférences d’identité visuelle, les noms de participants, leurs scores et l’historique des concours. Les données des espaces sont isolées par club. Le mode local conserve les données dans le navigateur de l’appareil.</p>
+    <h2>Finalités et base d’usage</h2>
+    <p>Ces informations servent à administrer le club, organiser les concours, synchroniser les appareils du club et afficher les résultats demandés. Les organisateurs doivent informer les participants et, lorsque nécessaire, leurs responsables légaux, et obtenir les autorisations requises avant de saisir ou publier leurs noms.</p>
+    <h2>Hébergement et sécurité</h2>
+    <p>Dans ce déploiement, les données sont conservées dans le volume Docker du serveur géré par le club. Les mots de passe sont dérivés avec PBKDF2 et les sessions utilisent un cookie HttpOnly. L’accès au site doit être protégé par HTTPS. Les administrateurs du serveur peuvent accéder au volume ; configurez des sauvegardes chiffrées et limitez l’accès système.</p>
+    <h2>Partage public et durée de conservation</h2>
+    <p>Un propriétaire peut créer un lien public temporaire exposant le nom du club, le nom du concours et les noms et scores des participants ayant terminé. Le lien expire après 30 jours et peut être remplacé en en générant un nouveau. Le responsable du club détermine la durée de conservation des concours et peut supprimer les données depuis l’administration ou le volume hébergé.</p>
+    <h2>Contact</h2>
+    <p>Pour toute demande liée aux données, contactez le responsable du club qui gère cet espace et son hébergement. Cette notice doit être adaptée par chaque club à ses coordonnées, à son hébergeur et à ses obligations locales avant diffusion publique.</p>
+  </main>
+</body>
+</html>
